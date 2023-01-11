@@ -1,0 +1,104 @@
+_schema-version: '3.2'
+ID: my-test-api # This would be the master production build
+version: 0.0.2
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build 
+
+modules:
+  # ---------------- DATABASE DEPLOYER MODULE ------------------
+  - name: test-db-deployer
+    # ------------------------------------------------------------
+    type: hdb
+    path: gen/db #there is only one db service for the whole app 
+    build-parameters:
+      ignore:
+        - default-*.json
+        - .env
+        - "*node_modules*"
+        - package-lock.json
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 512M #this memory will be released after the deployment
+      disk-quota: 1024M
+    requires:
+      - name: test-service-uaa
+      - name: test-service-db
+
+  # --------------------- SERVER MODULE ------------------------
+  - name: test-mdm-srv
+    # ------------------------------------------------------------
+    type: nodejs
+    path: gen/service1
+    build-parameters:
+      ignore:
+        - default-*.json
+        - .env
+        - "*node_modules*"
+        - package-lock.json
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 512M
+      disk-quota: 1024M
+    requires:
+      - name: test-service-uaa
+      - name: test-service-db
+    provides:
+      - name: srv-url
+        properties:
+          srv-url: ${default-url}
+
+  # ------------------ APP ROUTER MODULE -----------------------
+  - name: test-api
+    # -----------------------------------------------------------
+    type: approuter.nodejs
+    path: app
+    build-parameters:
+      ignore:
+        - default-*.json
+        - .env
+        - "*node_modules*"
+        - package-lock.json
+    parameters:
+      memory: 512M #only one instance of app router , manage routes to multiple services
+      disk-quota: 1024M
+      keep-existing-routes: true
+    requires:
+      - name: test-service-uaa
+      - name: srv-url
+        group: destinations
+        properties:
+          name: srv-url
+          url: ~{srv-url}
+          timeout: 600000
+          forwardAuthToken: true
+
+resources:
+  # ----------------------- UAA SERVICE ------------------------
+  - name: test-service-uaa
+    # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: test-data-${org}-${space}
+        tenant-mode: dedicated
+
+  # ------------------- HDI CONTAINER SERVICE ------------------
+  - name: test-service-db
+    # ------------------------------------------------------------
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}

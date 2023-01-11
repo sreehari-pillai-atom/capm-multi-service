@@ -1,0 +1,72 @@
+{
+  "name": "cds-srv",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/audit-logging": "^5",
+    "@sap/cds": "^6.1",
+    "@sap/cds-odata-v2-adapter-proxy": "^1",
+    "@sap/xsenv": "^3",
+    "@sap/xssec": "^3",
+    "cds-swagger-ui-express": "^0.5.0",
+    "debug": "^4.3",
+    "express": "^4",
+    "fs": "^0.0.1-security",
+    "hdb": "^0.19",
+    "passport": "^0.4.1"
+  },
+  "devDependencies": {
+    "@sap/ux-specification": "^1.96.4",
+    "copyfiles": "2.4.1"
+  },
+  "sapux": [
+    "app/resources/fiori"
+  ],
+  "scripts": {
+    "start": "cds run"
+  },
+  "engines": {
+    "node": "^16.15"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "es2020": true,
+      "node": true,
+      "jest": true,
+      "mocha": true
+    },
+    "globals": {
+      "SELECT": true,
+      "INSERT": true,
+      "UPDATE": true,
+      "DELETE": true,
+      "CREATE": true,
+      "DROP": true,
+      "CDL": true,
+      "CQL": true,
+      "CXL": true,
+      "cds": true
+    },
+    "rules": {
+      "no-console": "off",
+      "require-atomic-updates": "off"
+    }
+  }
+  ,
+  "cds": {
+    "requires": {
+      "uaa": {
+        "kind": "xsuaa"
+      },
+      "auth": {
+        "[production]": {
+          "strategy": "JWT"
+        }
+      }      
+    }
+  }
+}

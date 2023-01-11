@@ -1,0 +1,36 @@
+{
+    "build": {
+      "target": "gen",
+      "tasks": [
+        {
+          "for": "hana",
+          "src": "db",
+          "options": {
+            "model": [
+              "db",
+              "service1"
+            ]
+          }
+        },
+        {
+          "for": "nodejs",
+          "src": "service1",
+          "options": {
+            "model": [
+              "db",
+              "service1"
+            ]
+          }
+        }
+      ]
+    },
+    "requires": {
+      "db": {
+        "kind": "hana-cloud",
+        "model": [
+          "db",
+          "service1"
+        ]
+      }
+    }
+  }

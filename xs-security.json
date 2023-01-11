@@ -1,0 +1,15 @@
+{
+  "scopes": [
+  ],
+  "attributes": [
+  ],
+  "role-templates": [
+  ],
+  "oauth2-configuration": {
+    "token-validity": 3600,
+    "redirect-uris": [
+        "https://*.cfapps.*.hana.ondemand.com/login/callback"
+    ]
+  },
+  "authorities-inheritance": false
+}
