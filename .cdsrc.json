@@ -18,7 +18,8 @@
           "options": {
             "model": [
               "db",
-              "service1"
+              "service1",
+              "src"
             ]
           }
         }
