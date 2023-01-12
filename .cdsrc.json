@@ -8,7 +8,8 @@
           "options": {
             "model": [
               "db",
-              "service1"
+              "service1",
+              "service2"
             ]
           }
         },
@@ -18,8 +19,17 @@
           "options": {
             "model": [
               "db",
-              "service1",
-              "src"
+              "service1"
+            ]
+          }
+        },
+        {
+          "for": "nodejs",
+          "src": "service2",
+          "options": {
+            "model": [
+              "db",
+              "service2"
             ]
           }
         }
@@ -30,7 +40,8 @@
         "kind": "hana-cloud",
         "model": [
           "db",
-          "service1"
+          "service1",
+          "service2"
         ]
       }
     }

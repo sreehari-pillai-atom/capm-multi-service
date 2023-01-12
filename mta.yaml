@@ -11,6 +11,8 @@ build-parameters:
       commands:
         - npm install --production
         - npx -p @sap/cds-dk cds build 
+        - npx copyfiles -f srv/sd/*.* gen/service1/srv/sd/ -a 
+        - npx copyfiles -f srv/ab/*.* gen/service2/srv/ab/ -a
 
 modules:
   # ---------------- DATABASE DEPLOYER MODULE ------------------
@@ -55,6 +57,28 @@ modules:
         properties:
           srv-url: ${default-url}
 
+  - name: test-mdm-srv2
+    # ------------------------------------------------------------
+    type: nodejs
+    path: gen/service2
+    build-parameters:
+      ignore:
+        - default-*.json
+        - .env
+        - "*node_modules*"
+        - package-lock.json
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 512M
+      disk-quota: 1024M
+    requires:
+      - name: test-service-uaa
+      - name: test-service-db
+    provides:
+      - name: srv-url-2
+        properties:
+          srv-url-2: ${default-url}
+
   # ------------------ APP ROUTER MODULE -----------------------
   - name: test-api
     # -----------------------------------------------------------
@@ -77,6 +101,13 @@ modules:
         properties:
           name: srv-url
           url: ~{srv-url}
+          timeout: 600000
+          forwardAuthToken: true
+      - name: srv-url-2
+        group: destinations
+        properties:
+          name: srv-url-2
+          url: ~{srv-url-2}
           timeout: 600000
           forwardAuthToken: true
 

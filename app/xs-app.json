@@ -2,9 +2,16 @@
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/(.*)$",
+      "source": "^/srv-one/(.*)$",
       "target": "$1",
       "destination": "srv-url",
+      "authenticationType": "xsuaa",
+      "csrfProtection": true
+    },
+    {
+      "source": "^/srv-two/(.*)$",
+      "target": "$1",
+      "destination": "srv-url-2",
       "authenticationType": "xsuaa",
       "csrfProtection": true
     }
